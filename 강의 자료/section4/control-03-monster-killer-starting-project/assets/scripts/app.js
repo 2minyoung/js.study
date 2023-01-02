@@ -13,7 +13,6 @@ function attackHandler() {
         alert('You won!')
     }
 }
-
 attackBtn.addEventListener('click', attackHandler)
 
 
