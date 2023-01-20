@@ -89,7 +89,7 @@ const combine = (resultHandler, operation, ...numbers) => {
     return isNaN(number) ? 0 : number;
   };
 
-  let sum = 0;
+   sum = 0;
   for (const num of numbers) {
     if (operation === "ADD") {
       sum += validateNumber(num);
