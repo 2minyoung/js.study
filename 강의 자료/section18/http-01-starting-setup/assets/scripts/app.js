@@ -30,10 +30,11 @@ function sendHttpRequest(method, url, data) {
   // return promise;
   return fetch(url, {
     method: method,
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
+    body: data,
+    // body: JSON.stringify(data),
+    // headers: {
+    //   "Content-Type": "application/json",
+    // },
   })
     .then((response) => {
       if (response.status >= 200 && response.status < 300) {
@@ -53,12 +54,14 @@ function sendHttpRequest(method, url, data) {
 
 async function fetchPosts() {
   try {
-    const responseData = await sendHttpRequest(
-      "GET",
+    const response = await axios.get(
+      // const responseData = await sendHttpRequest(
+      // "GET",
       // "https://jsonplaceholder.typicode.com/pos"
       "https://jsonplaceholder.typicode.com/posts"
     );
-    const listOfPosts = responseData;
+    const listOfPosts = response.data;
+    // const listOfPosts = responseData;
     // const listOfPosts = JSON.parse(xhr.response);
     for (const post of listOfPosts) {
       const postEl = document.importNode(postTemplate.content, true);
@@ -69,6 +72,7 @@ async function fetchPosts() {
     }
   } catch (error) {
     alert(error.message);
+    console.log(error.response);
   }
 }
 
@@ -80,7 +84,19 @@ async function createPost(title, content) {
     userId: userId,
   };
 
-  sendHttpRequest("POST", "https://jsonplaceholder.typicode.com/posts", post);
+  //JSON 이 아닌 FormData 사용 예시시
+  const fd = new FormData();
+  fd.append("title", title);
+  fd.append("body", content);
+  fd.append("userId", userId);
+
+  const response = await axios.post(
+    "https://jsonplaceholder.typicode.com/posts",
+    post
+  );
+  console.log(response);
+  // sendHttpRequest("POST", "https://jsonplaceholder.typicode.com/posts", fd);
+  // sendHttpRequest("POST", "https://jsonplaceholder.typicode.com/posts", post);
 }
 
 fetchButton.addEventListener("click", fetchPosts);
@@ -95,8 +111,9 @@ form.addEventListener("submit", (event) => {
 postList.addEventListener("click", (event) => {
   if (event.target.tagName === "BUTTON") {
     const postId = event.target.closest("li").id;
-    sendHttpRequest(
-      "DELETE",
+    axios.delete(
+      // sendHttpRequest(
+      // "DELETE",
       `https://jsonplaceholder.typicode.com/posts/${postId}`
     );
   }
